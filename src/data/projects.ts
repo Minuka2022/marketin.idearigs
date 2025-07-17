@@ -144,6 +144,7 @@ export const projects: Project[] = [
       ]
     }
   }
+  ,
   {
     id: 'brand-packaging',
     title: 'PREMIUM PACKAGING',
