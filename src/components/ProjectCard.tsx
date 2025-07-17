@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
 
 interface ProjectCardProps {
   id: string;
@@ -8,34 +7,39 @@ interface ProjectCardProps {
   category: string;
   image: string;
   description?: string;
+  backgroundColor?: string;
 }
 
-const ProjectCard: React.FC<ProjectCardProps> = ({ id, title, category, image, description }) => {
+const ProjectCard: React.FC<ProjectCardProps> = ({ 
+  id, 
+  title, 
+  category, 
+  image, 
+  description, 
+  backgroundColor = '#f3f4f6' 
+}) => {
   return (
     <Link to={`/project/${id}`} className="group block">
-      <div className="bg-dark-100 rounded-lg overflow-hidden card-hover">
-        <div className="relative overflow-hidden">
+      <div className="rounded-2xl overflow-hidden card-hover transition-transform duration-300 group-hover:scale-105">
+        <div 
+          className="relative overflow-hidden aspect-square"
+          style={{ backgroundColor }}
+        >
           <img
             src={image}
             alt={title}
-            className="w-full h-64 object-cover transition-transform duration-300 group-hover:scale-105"
+            className="w-full h-full object-cover transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-            <button className="btn-primary flex items-center gap-2">
-              View Project
-              <ArrowRight size={16} />
-            </button>
-          </div>
         </div>
-        <div className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-primary text-sm font-medium">{category}</span>
+        <div className="p-6 bg-white">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
+              {title}
+            </h3>
+            <span className="text-gray-500 text-sm font-medium">{category}</span>
           </div>
-          <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-primary transition-colors duration-300">
-            {title}
-          </h3>
           {description && (
-            <p className="text-gray-400 text-sm line-clamp-2">{description}</p>
+            <p className="text-gray-600 text-sm line-clamp-2">{description}</p>
           )}
         </div>
       </div>

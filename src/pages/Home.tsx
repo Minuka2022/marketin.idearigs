@@ -1,19 +1,32 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { ArrowRight, Play } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import ToolsMarquee from '../components/ToolsMarquee';
 import ProjectCard from '../components/ProjectCard';
+import Footer from '../components/Footer';
 import { projects } from '../data/projects';
 
 const Home = () => {
-  const featuredProjects = projects.slice(0, 3);
+  const [filter, setFilter] = React.useState('All Categories');
+  
+  const categories = ['All Categories', 'Creative', 'Design', 'Photo', 'Style'];
+  
+  const filteredProjects = filter === 'All Categories' 
+    ? projects 
+    : projects.filter(project => project.category === filter.replace('All Categories', ''));
+
+  const scrollToContact = () => {
+    const element = document.getElementById('contact');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <div className="pt-16">
       {/* Hero Section */}
       <section className="min-h-screen flex items-center justify-center px-4 py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-16 text-white leading-tight animate-fade-in">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-16 text-gray-900 leading-tight animate-fade-in">
             A place to display your
             <br />
             masterpiece
@@ -60,18 +73,21 @@ const Home = () => {
             </div>
           </div>
           
-          <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto animate-slide-up">
+          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slide-up">
             Digital marketers can showcase their campaigns, and businesses can discover and connect with 
             services that resonate with them.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
-            <Link to="/contact" className="btn-primary inline-flex items-center gap-2">
+            <button onClick={scrollToContact} className="btn-primary inline-flex items-center gap-2">
               Contact Me
-            </Link>
-            <Link to="/portfolio" className="btn-secondary inline-flex items-center gap-2">
+            </button>
+            <button 
+              onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+              className="btn-secondary inline-flex items-center gap-2"
+            >
               Discover Our Work
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -79,20 +95,29 @@ const Home = () => {
       {/* Tools Marquee */}
       <ToolsMarquee />
 
-      {/* Featured Work Section */}
-      <section className="py-20 px-4">
+      {/* Work Section */}
+      <section id="work" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gradient">
-              Featured Work
-            </h2>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Discover how we've helped businesses across Sri Lanka achieve their digital goals
-            </p>
+          {/* Filter Buttons */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {categories.map((category) => (
+              <button
+                key={category}
+                onClick={() => setFilter(category)}
+                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                  filter === category
+                    ? 'bg-gray-900 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                }`}
+              >
+                {category}
+              </button>
+            ))}
           </div>
           
+          {/* Projects Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {featuredProjects.map((project) => (
+            {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
                 id={project.id}
@@ -100,26 +125,31 @@ const Home = () => {
                 category={project.category}
                 image={project.image}
                 description={project.description}
+                backgroundColor={project.backgroundColor}
               />
             ))}
           </div>
           
           <div className="text-center">
-            <Link to="/portfolio" className="btn-secondary inline-flex items-center gap-2">
-              View All Projects
+            <button className="bg-primary text-gray-900 px-8 py-4 rounded-full font-medium hover:bg-primary/90 transition-all duration-300 inline-flex items-center gap-2">
+              Load More
               <ArrowRight size={20} />
-            </Link>
+            </button>
           </div>
         </div>
       </section>
 
-      {/* Services Overview */}
-      <section className="py-20 px-4 bg-dark-100">
+      {/* About Section */}
+      <section id="about" className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gradient">
-              What We Do
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-gray-900">
+              About Idearigs
             </h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              We're a digital creative agency based in Sri Lanka, specializing in helping startups, 
+              tuition classes, and small businesses grow through strategic digital marketing and creative solutions.
+            </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -141,30 +171,35 @@ const Home = () => {
                 description: 'Professional video production with stunning visual effects'
               }
             ].map((service, index) => (
-              <div key={index} className="text-center p-6 rounded-lg bg-dark-200 card-hover">
-                <h3 className="text-xl font-semibold mb-4 text-primary">{service.title}</h3>
-                <p className="text-gray-400">{service.description}</p>
+              <div key={index} className="text-center p-6 rounded-lg bg-white card-hover">
+                <h3 className="text-xl font-semibold mb-4 text-gray-900">{service.title}</h3>
+                <p className="text-gray-600">{service.description}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20 px-4">
+      {/* Contact Section */}
+      <section id="contact" className="py-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gradient">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">
             Ready to Grow Your Business?
           </h2>
-          <p className="text-xl text-gray-400 mb-8">
+          <p className="text-xl text-gray-600 mb-8">
             Let's discuss how we can help you achieve your digital marketing goals
           </p>
-          <Link to="/contact" className="btn-primary inline-flex items-center gap-2">
+          <a 
+            href="mailto:hello@idearigs.com" 
+            className="btn-primary inline-flex items-center gap-2"
+          >
             Get Started Today
             <ArrowRight size={20} />
-          </Link>
+          </a>
         </div>
       </section>
+
+      <Footer />
     </div>
   );
 };

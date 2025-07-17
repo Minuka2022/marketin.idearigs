@@ -9,6 +9,7 @@ export interface Project {
   overview: string;
   goals: string[];
   gallery: string[];
+  backgroundColor?: string;
   outcome: {
     stats?: { label: string; value: string }[];
     quote?: {
@@ -22,10 +23,11 @@ export interface Project {
 export const projects: Project[] = [
   {
     id: 'fitness-coach-ads',
-    title: 'Fitness Coach Instagram Ads',
-    category: 'Ad Campaign',
+    title: 'FITNESS COACH ADS',
+    category: 'Creative',
     image: 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'High-converting Instagram ad campaign for a fitness coach targeting young professionals',
+    backgroundColor: '#fef3c7',
     client: 'FitLife Coach',
     tools: ['Photoshop', 'Meta Ads Manager', 'Canva'],
     overview: 'Created a comprehensive Instagram ad campaign for a fitness coach targeting busy professionals aged 25-40 in Colombo. The campaign focused on quick home workouts and nutrition tips.',
@@ -55,10 +57,11 @@ export const projects: Project[] = [
   },
   {
     id: 'tuition-class-thumbnails',
-    title: 'Mathematics Tuition Thumbnails',
-    category: 'Thumbnail Design',
+    title: 'MATH TUITION BRAND',
+    category: 'Design',
     image: 'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Eye-catching YouTube thumbnails for mathematics tuition classes',
+    backgroundColor: '#a7f3d0',
     client: 'MathGenius Academy',
     tools: ['Photoshop', 'Illustrator'],
     overview: 'Designed a series of YouTube thumbnails for a popular mathematics tuition class in Kandy. The thumbnails needed to stand out and attract A/L students.',
@@ -82,10 +85,11 @@ export const projects: Project[] = [
   },
   {
     id: 'restaurant-social-media',
-    title: 'Restaurant Social Media Campaign',
-    category: 'Content Creation',
+    title: 'SPICE GARDEN SOCIAL',
+    category: 'Photo',
     image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Complete social media content strategy for a local restaurant',
+    backgroundColor: '#fecaca',
     client: 'Spice Garden Restaurant',
     tools: ['Photoshop', 'Premiere Pro', 'Meta Ads Manager'],
     overview: 'Developed a comprehensive social media strategy for a traditional Sri Lankan restaurant, including food photography, video content, and targeted advertising.',
@@ -114,10 +118,11 @@ export const projects: Project[] = [
   },
   {
     id: 'tech-startup-vfx',
-    title: 'Tech Startup VFX Video',
-    category: 'VFX Video',
+    title: 'INNOVATE VFX VIDEO',
+    category: 'Style',
     image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Professional VFX promotional video for a tech startup',
+    backgroundColor: '#bfdbfe',
     client: 'InnovateLK',
     tools: ['After Effects', 'Cinema 4D', 'Premiere Pro'],
     overview: 'Created a high-impact promotional video with advanced VFX for a Sri Lankan tech startup launching their mobile app.',
@@ -136,6 +141,56 @@ export const projects: Project[] = [
         { label: 'Video Views', value: '100K+' },
         { label: 'App Downloads', value: '10K+' },
         { label: 'Investor Interest', value: '15 Meetings' }
+      ]
+    }
+  }
+  {
+    id: 'brand-packaging',
+    title: 'PREMIUM PACKAGING',
+    category: 'Style',
+    image: 'https://images.pexels.com/photos/3735747/pexels-photo-3735747.jpeg?auto=compress&cs=tinysrgb&w=800',
+    description: 'Luxury product packaging design for premium brand',
+    backgroundColor: '#d4a574',
+    client: 'Luxury Brand Co.',
+    tools: ['Illustrator', 'Photoshop', 'InDesign'],
+    overview: 'Designed premium packaging for a luxury product line targeting high-end consumers.',
+    goals: [
+      'Create premium brand perception',
+      'Stand out on retail shelves',
+      'Enhance unboxing experience'
+    ],
+    gallery: [
+      'https://images.pexels.com/photos/3735747/pexels-photo-3735747.jpeg?auto=compress&cs=tinysrgb&w=800'
+    ],
+    outcome: {
+      stats: [
+        { label: 'Sales Increase', value: '40%' },
+        { label: 'Brand Recognition', value: '85%' }
+      ]
+    }
+  },
+  {
+    id: 'headphone-campaign',
+    title: 'AUDIO EXPERIENCE',
+    category: 'Design',
+    image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=800',
+    description: 'Product photography and marketing campaign for premium headphones',
+    backgroundColor: '#fbbf24',
+    client: 'SoundWave Audio',
+    tools: ['Photoshop', 'Lightroom', 'After Effects'],
+    overview: 'Created a comprehensive marketing campaign for premium headphones including product photography and video content.',
+    goals: [
+      'Showcase product quality',
+      'Target audiophile market',
+      'Increase online sales'
+    ],
+    gallery: [
+      'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=800'
+    ],
+    outcome: {
+      stats: [
+        { label: 'Online Sales', value: '60%' },
+        { label: 'Engagement', value: '12%' }
       ]
     }
   }

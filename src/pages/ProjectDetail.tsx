@@ -11,10 +11,10 @@ const ProjectDetail = () => {
     return (
       <div className="pt-24 pb-20 px-4">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold mb-4">Project Not Found</h1>
-          <Link to="/portfolio" className="btn-primary inline-flex items-center gap-2">
+          <h1 className="text-4xl font-bold mb-4 text-gray-900">Project Not Found</h1>
+          <Link to="/" className="btn-primary inline-flex items-center gap-2">
             <ArrowLeft size={20} />
-            Back to Portfolio
+            Back to Home
           </Link>
         </div>
       </div>
@@ -25,22 +25,26 @@ const ProjectDetail = () => {
     <div className="pt-16">
       {/* Hero Image */}
       <div className="relative h-96 md:h-[500px] overflow-hidden">
-        <img
-          src={project.image}
-          alt={project.title}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/50" />
+        <div 
+          className="w-full h-full flex items-center justify-center"
+          style={{ backgroundColor: project.backgroundColor || '#f3f4f6' }}
+        >
+          <img
+            src={project.image}
+            alt={project.title}
+            className="max-w-md max-h-80 object-contain"
+          />
+        </div>
         <div className="absolute bottom-8 left-8">
           <Link
-            to="/portfolio"
-            className="inline-flex items-center gap-2 text-white hover:text-primary transition-colors duration-300 mb-4"
+            to="/"
+            className="inline-flex items-center gap-2 text-gray-900 hover:text-gray-700 transition-colors duration-300 mb-4"
           >
             <ArrowLeft size={20} />
-            Back to Portfolio
+            Back to Home
           </Link>
-          <span className="block text-primary text-sm font-medium mb-2">{project.category}</span>
-          <h1 className="text-4xl md:text-5xl font-bold text-white">{project.title}</h1>
+          <span className="block text-gray-600 text-sm font-medium mb-2">{project.category}</span>
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900">{project.title}</h1>
         </div>
       </div>
 
@@ -50,18 +54,18 @@ const ProjectDetail = () => {
           <div className="lg:col-span-2">
             {/* Overview */}
             <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-4 text-primary">Project Overview</h2>
-              <p className="text-gray-300 text-lg leading-relaxed">{project.overview}</p>
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Project Overview</h2>
+              <p className="text-gray-600 text-lg leading-relaxed">{project.overview}</p>
             </section>
 
             {/* Goals */}
             <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-4 text-primary">Project Goals</h2>
+              <h2 className="text-2xl font-bold mb-4 text-gray-900">Project Goals</h2>
               <ul className="space-y-3">
                 {project.goals.map((goal, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0" />
-                    <span className="text-gray-300">{goal}</span>
+                    <span className="text-gray-600">{goal}</span>
                   </li>
                 ))}
               </ul>
@@ -69,7 +73,7 @@ const ProjectDetail = () => {
 
             {/* Gallery */}
             <section className="mb-12">
-              <h2 className="text-2xl font-bold mb-6 text-primary">Gallery</h2>
+              <h2 className="text-2xl font-bold mb-6 text-gray-900">Gallery</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {project.gallery.map((image, index) => (
                   <div key={index} className="rounded-lg overflow-hidden">
@@ -86,12 +90,12 @@ const ProjectDetail = () => {
             {/* Results */}
             {project.outcome.stats && (
               <section className="mb-12">
-                <h2 className="text-2xl font-bold mb-6 text-primary">Results</h2>
+                <h2 className="text-2xl font-bold mb-6 text-gray-900">Results</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {project.outcome.stats.map((stat, index) => (
-                    <div key={index} className="text-center p-6 bg-dark-100 rounded-lg">
+                    <div key={index} className="text-center p-6 bg-gray-50 rounded-lg">
                       <div className="text-3xl font-bold text-primary mb-2">{stat.value}</div>
-                      <div className="text-gray-400 text-sm">{stat.label}</div>
+                      <div className="text-gray-600 text-sm">{stat.label}</div>
                     </div>
                   ))}
                 </div>
@@ -101,14 +105,14 @@ const ProjectDetail = () => {
             {/* Client Quote */}
             {project.outcome.quote && (
               <section className="mb-12">
-                <div className="bg-dark-100 p-8 rounded-lg border-l-4 border-primary">
-                  <blockquote className="text-lg text-gray-300 mb-4 italic">
+                <div className="bg-gray-50 p-8 rounded-lg border-l-4 border-primary">
+                  <blockquote className="text-lg text-gray-600 mb-4 italic">
                     "{project.outcome.quote.text}"
                   </blockquote>
-                  <div className="text-primary font-medium">
+                  <div className="text-gray-900 font-medium">
                     {project.outcome.quote.author}
                   </div>
-                  <div className="text-gray-400 text-sm">
+                  <div className="text-gray-600 text-sm">
                     {project.outcome.quote.position}
                   </div>
                 </div>
@@ -118,27 +122,27 @@ const ProjectDetail = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-dark-100 p-6 rounded-lg sticky top-24">
-              <h3 className="text-xl font-bold mb-4 text-primary">Project Details</h3>
+            <div className="bg-gray-50 p-6 rounded-lg sticky top-24">
+              <h3 className="text-xl font-bold mb-4 text-gray-900">Project Details</h3>
               
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-white mb-2">Client</h4>
-                  <p className="text-gray-400">{project.client}</p>
+                  <h4 className="font-medium text-gray-900 mb-2">Client</h4>
+                  <p className="text-gray-600">{project.client}</p>
                 </div>
                 
                 <div>
-                  <h4 className="font-medium text-white mb-2">Category</h4>
-                  <p className="text-gray-400">{project.category}</p>
+                  <h4 className="font-medium text-gray-900 mb-2">Category</h4>
+                  <p className="text-gray-600">{project.category}</p>
                 </div>
                 
                 <div>
-                  <h4 className="font-medium text-white mb-2">Tools Used</h4>
+                  <h4 className="font-medium text-gray-900 mb-2">Tools Used</h4>
                   <div className="flex flex-wrap gap-2">
                     {project.tools.map((tool, index) => (
                       <span
                         key={index}
-                        className="px-3 py-1 bg-dark-200 text-primary text-sm rounded-full"
+                        className="px-3 py-1 bg-white text-gray-700 text-sm rounded-full border"
                       >
                         {tool}
                       </span>
@@ -147,10 +151,13 @@ const ProjectDetail = () => {
                 </div>
               </div>
 
-              <div className="mt-8 pt-6 border-t border-dark-300">
-                <Link to="/contact" className="btn-primary w-full text-center block">
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <a 
+                  href="mailto:hello@idearigs.com" 
+                  className="btn-primary w-full text-center block"
+                >
                   Start Your Project
-                </Link>
+                </a>
               </div>
             </div>
           </div>
