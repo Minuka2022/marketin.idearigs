@@ -11,25 +11,66 @@ const Home = () => {
   return (
     <div className="pt-16">
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-4">
+      <section className="min-h-screen flex items-center justify-center px-4 py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 text-gradient animate-fade-in">
-            Digital Growth
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-16 text-white leading-tight animate-fade-in">
+            A place to display your
             <br />
-            <span className="text-primary">Simplified</span>
+            masterpiece
           </h1>
-          <p className="text-xl md:text-2xl text-gray-400 mb-8 max-w-2xl mx-auto animate-slide-up">
-            We help Sri Lankan startups, tuition classes, and small businesses grow digitally through 
-            strategic social media marketing, compelling ad campaigns, and stunning visual content.
+          
+          {/* Overlapping Cards */}
+          <div className="relative flex justify-center items-center mb-16 animate-slide-up">
+            <div className="flex items-center justify-center space-x-4 md:space-x-6">
+              {/* Card 1 - VR/Tech */}
+              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-300">
+                <img
+                  src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="VFX and Technology"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Card 2 - Food/Restaurant */}
+              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[4deg] hover:rotate-[2deg] transition-transform duration-300 z-10">
+                <img
+                  src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Food and Restaurant Marketing"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Card 3 - Fitness */}
+              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-2deg] hover:rotate-[0deg] transition-transform duration-300">
+                <img
+                  src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Fitness Marketing"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Card 4 - Education */}
+              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[6deg] hover:rotate-[3deg] transition-transform duration-300">
+                <img
+                  src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800"
+                  alt="Education and Tuition"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+          
+          <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl mx-auto animate-slide-up">
+            Digital marketers can showcase their campaigns, and businesses can discover and connect with 
+            services that resonate with them.
           </p>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
-            <Link to="/portfolio" className="btn-primary inline-flex items-center gap-2">
-              View Our Work
-              <ArrowRight size={20} />
+            <Link to="/contact" className="btn-primary inline-flex items-center gap-2">
+              Contact Me
             </Link>
-            <Link to="/contact" className="btn-secondary inline-flex items-center gap-2">
-              Start Your Project
-              <Play size={20} />
+            <Link to="/portfolio" className="btn-secondary inline-flex items-center gap-2">
+              Discover Our Work
             </Link>
           </div>
         </div>
