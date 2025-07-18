@@ -7,7 +7,6 @@ interface ProjectCardProps {
   category: string;
   image: string;
   description?: string;
-  backgroundColor?: string;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({ 
@@ -15,28 +14,22 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   title, 
   category, 
   image, 
-  description, 
-  backgroundColor = '#f3f4f6' 
+  description
 }) => {
   return (
     <Link to={`/project/${id}`} className="group block">
-      <div className="rounded-3xl overflow-hidden transition-transform duration-300 group-hover:scale-105">
-        <div 
-          className="relative overflow-hidden aspect-square p-8 flex items-center justify-center"
-          style={{ backgroundColor }}
-        >
+      <div className="transition-transform duration-300 group-hover:scale-[1.02]">
+        <div className="relative overflow-hidden aspect-square rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
           <img
             src={image}
             alt={title}
-            className="w-full h-full object-contain transition-transform duration-300"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
-        </div>
-        <div className="pt-6 pb-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
-              {title}
-            </h3>
-            <span className="text-gray-500 text-sm font-medium">{category}</span>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+            <div className="text-white">
+              <h3 className="text-lg font-bold drop-shadow-md">{title}</h3>
+              <span className="text-sm font-medium text-white/90 drop-shadow-md">{category}</span>
+            </div>
           </div>
         </div>
       </div>

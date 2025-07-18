@@ -24,7 +24,7 @@ export const projects: Project[] = [
   {
     id: 'the-dark-side',
     title: 'THE DARK SIDE',
-    category: 'Creative',
+    category: 'FB Ad',
     image: 'https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Creative food photography and branding project',
     backgroundColor: '#fbbf24',
@@ -56,7 +56,7 @@ export const projects: Project[] = [
   {
     id: 'justice-robot',
     title: 'JUSTICE ROBOT',
-    category: 'Design',
+    category: 'Post Design',
     image: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Industrial design and 3D modeling project',
     backgroundColor: '#9ca3af',
@@ -82,7 +82,7 @@ export const projects: Project[] = [
   {
     id: 'color-current',
     title: 'COLOR CURRENT',
-    category: 'Photo',
+    category: 'Videography',
     image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Vintage camera photography and styling project',
     backgroundColor: '#7dd3fc',
@@ -113,7 +113,7 @@ export const projects: Project[] = [
   {
     id: 'subsequent-sneeze',
     title: 'SUBSEQUENT SNEEZE',
-    category: 'Style',
+    category: 'Social Media Managing',
     image: 'https://images.pexels.com/photos/3735747/pexels-photo-3735747.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Minimalist product design and branding',
     backgroundColor: '#d4a574',
@@ -135,12 +135,11 @@ export const projects: Project[] = [
         { label: 'Customer Satisfaction', value: '95%' }
       ]
     }
-  }
-  ,
+  },
   {
     id: 'wiggly-finger',
     title: 'WIGGLY FINGER',
-    category: 'Creative',
+    category: 'Thumbnails',
     image: 'https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Creative fashion and lifestyle photography',
     backgroundColor: '#10b981',
@@ -166,7 +165,7 @@ export const projects: Project[] = [
   {
     id: 'share-spark',
     title: 'SHARE SPARK',
-    category: 'Design',
+    category: 'Post Design',
     image: 'https://images.pexels.com/photos/3394650/pexels-photo-3394650.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Audio equipment design and branding project',
     backgroundColor: '#fbbf24',
@@ -191,7 +190,7 @@ export const projects: Project[] = [
   {
     id: 'random-risk',
     title: 'RANDOM RISK',
-    category: 'Photo',
+    category: 'Videography',
     image: 'https://images.pexels.com/photos/1229356/pexels-photo-1229356.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Sports and lifestyle photography project',
     backgroundColor: '#0ea5e9',
@@ -216,7 +215,7 @@ export const projects: Project[] = [
   {
     id: 'stream-shop',
     title: 'STREAM SHOP',
-    category: 'Style',
+    category: 'Video Editing',
     image: 'https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'E-commerce branding and packaging design',
     backgroundColor: '#dc2626',
@@ -241,7 +240,7 @@ export const projects: Project[] = [
   {
     id: 'freezing-birthday',
     title: 'FREEZING BIRTHDAY',
-    category: 'Creative',
+    category: 'Social Media Managing',
     image: 'https://images.pexels.com/photos/1431282/pexels-photo-1431282.jpeg?auto=compress&cs=tinysrgb&w=800',
     description: 'Creative product design and styling',
     backgroundColor: '#ca8a04',

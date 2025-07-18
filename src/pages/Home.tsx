@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, MessageCircle, Camera, Utensils, Dumbbell, BookOpen, Share2, Target, FileText, Film } from 'lucide-react';
 import ToolsMarquee from '../components/ToolsMarquee';
 import ProjectCard from '../components/ProjectCard';
 import Footer from '../components/Footer';
@@ -8,7 +8,7 @@ import { projects } from '../data/projects';
 const Home = () => {
   const [filter, setFilter] = React.useState('All Categories');
   
-  const categories = ['All Categories', 'Creative', 'Design', 'Photo', 'Style'];
+  const categories = ['All Categories', 'FB Ad', 'Thumbnails', 'Video Editing', 'Post Design', 'Videography', 'Social Media Managing'];
   
   const filteredProjects = filter === 'All Categories' 
     ? projects 
@@ -43,7 +43,7 @@ const Home = () => {
           <div className="relative flex justify-center items-center mb-16">
             <div className="flex items-center justify-center space-x-2 md:space-x-4">
               {/* Card 1 - VR/Tech */}
-              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-8deg] hover:rotate-[-4deg] transition-all duration-300 hover:shadow-2xl">
                 <img
                   src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="VFX and Technology"
@@ -52,7 +52,7 @@ const Home = () => {
               </div>
               
               {/* Card 2 - Food/Restaurant */}
-              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[4deg] hover:rotate-[2deg] transition-transform duration-300 z-10">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[4deg] hover:rotate-[2deg] transition-all duration-300 hover:shadow-2xl z-10">
                 <img
                   src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Food and Restaurant Marketing"
@@ -61,7 +61,7 @@ const Home = () => {
               </div>
               
               {/* Card 3 - Fitness */}
-              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-2deg] hover:rotate-[0deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-2deg] hover:rotate-[0deg] transition-all duration-300 hover:shadow-2xl">
                 <img
                   src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Fitness Marketing"
@@ -70,7 +70,7 @@ const Home = () => {
               </div>
               
               {/* Card 4 - Education */}
-              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[6deg] hover:rotate-[3deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[6deg] hover:rotate-[3deg] transition-all duration-300 hover:shadow-2xl">
                 <img
                   src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Education and Tuition"
@@ -133,17 +133,16 @@ const Home = () => {
                 category={project.category}
                 image={project.image}
                 description={project.description}
-                backgroundColor={project.backgroundColor}
               />
             ))}
           </div>
           
-          <div className="text-center">
+          {/* <div className="text-center">
             <button className="bg-orange-400 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-500 transition-all duration-300 inline-flex items-center gap-2">
               Load More
               <ArrowRight size={20} />
             </button>
-          </div>
+          </div> */}
         </div>
       </section>
 
@@ -164,22 +163,37 @@ const Home = () => {
             {[
               {
                 title: 'Social Media Marketing',
-                description: 'Strategic campaigns that build communities and drive engagement'
+                description: 'Strategic campaigns that build communities and drive engagement',
+                icon: <Share2 className="w-6 h-6 text-blue-500" />,
+                bgColor: 'bg-blue-50',
+                iconColor: 'text-blue-500'
               },
               {
                 title: 'Ad Campaigns',
-                description: 'High-converting ads that maximize your ROI and reach'
+                description: 'High-converting ads that maximize your ROI and reach',
+                icon: <Target className="w-6 h-6 text-green-500" />,
+                bgColor: 'bg-green-50',
+                iconColor: 'text-green-500'
               },
               {
                 title: 'Content Creation',
-                description: 'Compelling visuals and copy that tell your brand story'
+                description: 'Compelling visuals and copy that tell your brand story',
+                icon: <FileText className="w-6 h-6 text-amber-500" />,
+                bgColor: 'bg-amber-50',
+                iconColor: 'text-amber-500'
               },
               {
                 title: 'VFX Videos',
-                description: 'Professional video production with stunning visual effects'
+                description: 'Professional video production with stunning visual effects',
+                icon: <Film className="w-6 h-6 text-purple-500" />,
+                bgColor: 'bg-purple-50',
+                iconColor: 'text-purple-500'
               }
             ].map((service, index) => (
-              <div key={index} className="text-center p-6 rounded-lg bg-white card-hover">
+              <div key={index} className="text-center p-8 rounded-xl bg-white shadow-sm hover:shadow-md transition-shadow duration-300">
+                <div className={`w-14 h-14 ${service.bgColor} rounded-full flex items-center justify-center mx-auto mb-5`}>
+                  {service.icon}
+                </div>
                 <h3 className="text-xl font-semibold mb-4 text-gray-900">{service.title}</h3>
                 <p className="text-gray-600">{service.description}</p>
               </div>
@@ -198,11 +212,13 @@ const Home = () => {
             Let's discuss how we can help you achieve your digital marketing goals
           </p>
           <a 
-            href="mailto:hello@idearigs.com" 
-            className="btn-primary inline-flex items-center gap-2"
+            href="https://wa.me/94762021375" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-full font-medium transition-colors duration-200 inline-flex items-center gap-2"
           >
-            Get Started Today
-            <ArrowRight size={20} />
+            <MessageCircle size={20} />
+            We're Available to Chat
           </a>
         </div>
       </section>

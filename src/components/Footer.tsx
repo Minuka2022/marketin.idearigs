@@ -1,4 +1,5 @@
 import React from 'react';
+import { Instagram, Facebook, MessageCircle } from 'lucide-react';
 
 const Footer = () => {
   const services = [
@@ -22,18 +23,22 @@ const Footer = () => {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center max-w-2xl mx-auto">
           <div className="mb-6 md:mb-0">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Social Media</h3>
-            <div className="flex space-x-4">
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Be</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Ig</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Fb</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Tw</a>
-              <a href="#" className="text-gray-600 hover:text-gray-900 transition-colors">Li</a>
+            <div className="flex space-x-6">
+              <a href="https://instagram.com/idearigs" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-pink-600 transition-colors">
+                <Instagram size={24} />
+              </a>
+              <a href="https://facebook.com/idearigs" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-blue-600 transition-colors">
+                <Facebook size={24} />
+              </a>
+              <a href="https://tiktok.com/@idearigs" target="_blank" rel="noopener noreferrer" className="text-gray-600 hover:text-black transition-colors">
+                <MessageCircle size={24} />
+              </a>
             </div>
           </div>
           <div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Contact</h3>
-            <a href="mailto:hello@idearigs.com" className="text-gray-600 hover:text-gray-900 transition-colors">
-              hello@idearigs.com
+            <a href="mailto:info@idearigs.com" className="text-gray-600 hover:text-green-600 transition-colors flex items-center gap-2">
+              <span>info@idearigs.com</span>
             </a>
           </div>
         </div>

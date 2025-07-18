@@ -1,28 +1,32 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, X, Search, User } from 'lucide-react';
+import { Menu, X, MessageCircle } from 'lucide-react';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
   const navItems = [
-    { name: 'Index', path: '/' },
-    { name: 'News', path: '/#news' },
-    { name: 'Projects', path: '/#work' },
-    { name: 'Pages', path: '/#pages' },
-    { name: 'Shop', path: '/#shop' },
-    { name: 'Contact', path: '/#contact' },
+    { name: 'Home', path: '#home' },
+    { name: 'Work', path: '#work' },
+    { name: 'About', path: '#about' },
+    { name: 'Contact', path: '#contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  const isActive = (path: string) => {
+    if (typeof window !== 'undefined') {
+      return window.location.hash === path;
+    }
+    return false;
+  };
 
-  const handleNavClick = (path: string) => {
-    if (path.startsWith('/#')) {
-      const element = document.getElementById(path.substring(2));
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
+  const handleNavClick = (e: React.MouseEvent, path: string) => {
+    e.preventDefault();
+    const element = document.querySelector(path);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+      // Update URL without page reload
+      window.history.pushState({}, '', path);
     }
     setIsOpen(false);
   };
@@ -32,32 +36,51 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <span className="text-2xl font-bold text-gray-900">osty.</span>
-            <div className="w-2 h-2 bg-orange-400 rounded-full ml-1"></div>
-          </Link>
+          <a 
+            href="#home" 
+            onClick={(e) => {
+              e.preventDefault();
+              const element = document.getElementById('home');
+              if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                window.history.pushState({}, '', '#');
+              }
+            }}
+            className="flex items-center"
+          >
+            <span className="text-2xl font-bold text-gray-900 hover:text-green-600 transition-colors duration-200 relative group">
+              Idearigs Studio
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-green-500 transition-all duration-300 group-hover:w-full"></span>
+            </span>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
-              <Link
+              <a
                 key={item.name}
-                to={item.path}
-                className="text-gray-900 hover:text-gray-600 transition-colors duration-200 text-sm font-medium"
+                href={item.path}
+                onClick={(e) => handleNavClick(e, item.path)}
+                className={`${
+                  isActive(item.path) ? 'text-orange-500' : 'text-gray-900 hover:text-green-600'
+                } transition-colors duration-200 text-sm font-medium cursor-pointer relative group`}
               >
                 {item.name}
-              </Link>
+              </a>
             ))}
           </div>
 
-          {/* Right side icons */}
-          <div className="hidden lg:flex items-center space-x-4">
-            <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <Search size={20} />
-            </button>
-            <button className="p-2 text-gray-600 hover:text-gray-900 transition-colors">
-              <User size={20} />
-            </button>
+          {/* WhatsApp DM Button */}
+          <div className="hidden lg:block">
+            <a 
+              href="https://wa.me/94762021375" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors duration-200"
+            >
+              <MessageCircle size={18} />
+              <span>Send us a DM</span>
+            </a>
           </div>
 
           {/* Mobile menu button */}
@@ -72,26 +95,34 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Navigation */}
-        {isOpen && (
-          <div className="lg:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 bg-gray-50 rounded-lg mt-2">
-              {navItems.map((item) => (
-                <Link
+        <div className={`lg:hidden ${isOpen ? 'block' : 'hidden'}`}>
+          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+            {navItems.map((item) => (
+              <a
                 key={item.name}
-                to={item.path}
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 text-base font-medium transition-colors duration-300 ${
+                href={item.path}
+                onClick={(e) => handleNavClick(e, item.path)}
+                className={`block px-3 py-2 rounded-md text-base font-medium ${
                   isActive(item.path)
-                    ? 'text-gray-900 bg-gray-100'
-                    : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
+                    ? 'bg-orange-500 text-white'
+                    : 'text-gray-700 hover:bg-gray-100 hover:text-green-600'
                 }`}
               >
                 {item.name}
-              </Link>
-              ))}
-            </div>
+              </a>
+            ))}
+            <a 
+              href="https://wa.me/94762021375" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 mt-2"
+              onClick={() => setIsOpen(false)}
+            >
+              <MessageCircle size={18} />
+              <span>Send us a DM</span>
+            </a>
           </div>
-        )}
+        </div>
       </div>
     </nav>
   );
