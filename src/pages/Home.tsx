@@ -107,15 +107,15 @@ const Home = () => {
       <section id="work" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           {/* Filter Buttons */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
+          <div className="flex flex-wrap justify-center gap-3 mb-16">
             {categories.map((category) => (
               <button
                 key={category}
                 onClick={() => setFilter(category)}
-                className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
+                className={`px-6 py-3 rounded-full text-sm font-medium transition-all duration-300 ${
                   filter === category
                     ? 'bg-gray-900 text-white'
-                    : 'bg-gray-100 text-gray-600 hover:text-gray-900 hover:bg-gray-200'
+                    : 'bg-gray-100 text-gray-500 hover:text-gray-900 hover:bg-gray-200'
                 }`}
               >
                 {category}
@@ -124,7 +124,7 @@ const Home = () => {
           </div>
           
           {/* Projects Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
             {filteredProjects.map((project) => (
               <ProjectCard
                 key={project.id}
@@ -139,7 +139,7 @@ const Home = () => {
           </div>
           
           <div className="text-center">
-            <button className="bg-primary text-gray-900 px-8 py-4 rounded-full font-medium hover:bg-primary/90 transition-all duration-300 inline-flex items-center gap-2">
+            <button className="bg-orange-400 text-white px-8 py-3 rounded-full font-medium hover:bg-orange-500 transition-all duration-300 inline-flex items-center gap-2">
               Load More
               <ArrowRight size={20} />
             </button>

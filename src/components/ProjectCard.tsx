@@ -20,27 +20,24 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 }) => {
   return (
     <Link to={`/project/${id}`} className="group block">
-      <div className="rounded-2xl overflow-hidden card-hover transition-transform duration-300 group-hover:scale-105">
+      <div className="rounded-3xl overflow-hidden transition-transform duration-300 group-hover:scale-105">
         <div 
-          className="relative overflow-hidden aspect-square"
+          className="relative overflow-hidden aspect-square p-8 flex items-center justify-center"
           style={{ backgroundColor }}
         >
           <img
             src={image}
             alt={title}
-            className="w-full h-full object-cover transition-transform duration-300"
+            className="w-full h-full object-contain transition-transform duration-300"
           />
         </div>
-        <div className="p-6 bg-white">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-xl font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
+        <div className="pt-6 pb-2">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-gray-900 group-hover:text-gray-700 transition-colors duration-300">
               {title}
             </h3>
             <span className="text-gray-500 text-sm font-medium">{category}</span>
           </div>
-          {description && (
-            <p className="text-gray-600 text-sm line-clamp-2">{description}</p>
-          )}
         </div>
       </div>
     </Link>
