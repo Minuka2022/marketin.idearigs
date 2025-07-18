@@ -88,7 +88,8 @@ const Navbar = () => {
               >
                 {item.name}
               </Link>
-            ))}
+              ))}
+            </div>
           </div>
         )}
       </div>
