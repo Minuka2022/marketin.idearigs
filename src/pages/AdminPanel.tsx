@@ -1,17 +1,313 @@
 import React, { useState, useEffect } from 'react';
-import { Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useNavigate, useLocation, useParams } from 'react-router-dom';
 import { 
   Plus, Edit, Trash2, Eye, ArrowLeft, Save, X, Search, Filter,
   BarChart3, Users, FolderOpen, Settings, LogOut, Home,
-  Calendar, TrendingUp, Activity, Grid3X3, List, Image,
+  Calendar, TrendingUp, Activity, Grid3X3, List, Image as ImageIcon,
   ExternalLink, ChevronRight, Bell, User
 } from 'lucide-react';
-import { projects as initialProjects, Project } from '../data/projects';
+// Import initial projects data for fallback
+import { projects as initialProjectsData } from '../data/projects';
 
-const AdminPanel = () => {
-  const [projects, setProjects] = useState<Project[]>(initialProjects);
+// Define interfaces for project data
+interface ProjectOutcome {
+  stats: Array<{ label: string; value: string; color?: string; icon?: string }>;
+  quote?: { text: string; author: string };
+}
+
+interface Project {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  description: string;
+  backgroundColor: string;
+  client: string;
+  tools: string[];
+  overview: string;
+  goals: string[];
+  gallery: string[];
+  outcome: ProjectOutcome;
+}
+
+// Form data interface for project creation/editing
+interface ProjectFormData {
+  id: string;
+  title: string;
+  category: string;
+  image: string;
+  description: string;
+  backgroundColor: string;
+  client: string;
+  tools: string[];
+  overview: string;
+  goals: string[];
+  gallery: string[];
+  outcome: {
+    stats: Array<{ label: string; value: string; color?: string; icon?: string }>;
+    quote?: { text: string; author: string };
+  };
+}
+
+// Dashboard component
+const Dashboard: React.FC<{ projects: Project[] }> = ({ projects }) => {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6">Dashboard</h1>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="font-bold flex items-center gap-2">
+            <FolderOpen size={18} /> Projects
+          </h2>
+          <p className="text-3xl font-bold mt-2">{projects.length}</p>
+          <Link to="/admin/projects" className="text-blue-500 text-sm flex items-center mt-2">
+            View all <ChevronRight size={16} />
+          </Link>
+        </div>
+        
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="font-bold flex items-center gap-2">
+            <Activity size={18} /> Activity
+          </h2>
+          <p className="text-sm mt-2">Recent login: {new Date().toLocaleString()}</p>
+        </div>
+        
+        <div className="bg-white p-4 rounded shadow">
+          <h2 className="font-bold flex items-center gap-2">
+            <TrendingUp size={18} /> Stats
+          </h2>
+          <p className="text-sm mt-2">Portfolio views: 1,234</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ProjectsList component
+const ProjectsList: React.FC<{ projects: Project[] }> = ({ projects }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this project?')) return;
+    
+    try {
+      setIsLoading(true);
+      const token = localStorage.getItem('admin_token');
+      
+      const response = await fetch(`http://localhost:5000/api/projects/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete project');
+      }
+
+      // Refresh the page to get updated projects list
+      window.location.reload();
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      setError('Failed to delete project. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="p-6">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">Projects</h1>
+        <Link to="/admin/projects/new" className="bg-blue-500 text-white px-4 py-2 rounded flex items-center gap-2">
+          <Plus size={16} /> Add Project
+        </Link>
+      </div>
+
+      {isLoading && <p className="text-center py-4">Loading projects...</p>}
+      {error && <p className="text-red-500 py-2">{error}</p>}
+      
+      {!isLoading && projects.length === 0 && (
+        <div className="text-center py-8 bg-gray-50 rounded">
+          <p className="text-gray-500">No projects found.</p>
+          <Link to="/admin/projects/new" className="text-blue-500 mt-2 inline-block">
+            Create your first project
+          </Link>
+        </div>
+      )}
+
+      {!isLoading && projects.length > 0 && (
+        <div className="bg-white rounded shadow overflow-hidden">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gray-100 border-b">
+                <th className="py-3 px-4 text-left">ID</th>
+                <th className="py-3 px-4 text-left">Title</th>
+                <th className="py-3 px-4 text-left">Category</th>
+                <th className="py-3 px-4 text-left">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {projects.map(project => (
+                <tr key={project.id} className="border-b hover:bg-gray-50">
+                  <td className="py-3 px-4">{project.id}</td>
+                  <td className="py-3 px-4">{project.title}</td>
+                  <td className="py-3 px-4">{project.category}</td>
+                  <td className="py-3 px-4 flex gap-2">
+                    <Link to={`/admin/projects/view/${project.id}`} className="text-blue-500 hover:text-blue-700">
+                      <Eye size={18} />
+                    </Link>
+                    <Link to={`/admin/projects/edit/${project.id}`} className="text-green-500 hover:text-green-700">
+                      <Edit size={18} />
+                    </Link>
+                    <button 
+                      onClick={() => handleDelete(project.id)} 
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AdminPanel: React.FC = () => {
+  // Convert initialProjects to match our Project interface
+  const convertedProjects = initialProjects.map(p => ({
+    ...p,
+    tools: Array.isArray(p.tools) ? p.tools : [],
+    goals: Array.isArray(p.goals) ? p.goals : [],
+    gallery: Array.isArray(p.gallery) ? p.gallery : [],
+    backgroundColor: p.backgroundColor || '#f3f4f6',
+    outcome: {
+      stats: Array.isArray(p.outcome?.stats) ? p.outcome.stats : [],
+      quote: p.outcome?.quote
+    }
+  })) as Project[];
+  
+  const [projects, setProjects] = useState<Project[]>(convertedProjects);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@example.com');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Check authentication on component mount
+  useEffect(() => {
+    const auth = localStorage.getItem('admin_auth');
+    if (auth === 'true') {
+      setIsAuthenticated(true);
+      // Redirect to dashboard if on login page
+      if (location.pathname === '/admin') {
+        navigate('/admin/dashboard');
+      }
+    }
+  }, [location.pathname, navigate]);
+
+  // Fetch projects when authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchProjects();
+    }
+  }, [isAuthenticated]);
+
+  // Fetch projects from backend API
+  const fetchProjects = async () => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      if (!token) return;
+
+      const response = await fetch('http://localhost:5000/api/projects', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+
+      const data = await response.json();
+      setProjects(data);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+    }
+  };
+
+  // Handle login form submission
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      // Save token and authentication state
+      localStorage.setItem('admin_auth', 'true');
+      localStorage.setItem('admin_token', data.token);
+      
+      setIsAuthenticated(true);
+      navigate('/admin/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Handle logout
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('admin_auth');
+    localStorage.removeItem('admin_token');
+    navigate('/admin');
+  };
+
+
+const AdminPanel = () => {
+  // Convert initialProjects to match our Project interface
+  const convertedProjects = initialProjects.map(p => ({
+    ...p,
+    tools: Array.isArray(p.tools) ? p.tools : [],
+    goals: Array.isArray(p.goals) ? p.goals : [],
+    gallery: Array.isArray(p.gallery) ? p.gallery : [],
+    backgroundColor: p.backgroundColor || '#f3f4f6',
+    outcome: {
+      stats: Array.isArray(p.outcome?.stats) ? p.outcome.stats : [],
+      quote: p.outcome?.quote
+    }
+  }));
+
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('admin@example.com');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -22,20 +318,44 @@ const AdminPanel = () => {
     }
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === 'admin123') {
-      setIsAuthenticated(true);
+    setIsLoading(true);
+    setError('');
+    
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed');
+      }
+      
+      // Save token and authentication state
       localStorage.setItem('admin_auth', 'true');
+      localStorage.setItem('admin_token', data.token);
+      
+      setIsAuthenticated(true);
       navigate('/admin/dashboard');
-    } else {
-      alert('Invalid password');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError(error instanceof Error ? error.message : 'Login failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem('admin_auth');
+    localStorage.removeItem('admin_token');
     navigate('/admin');
   };
 
@@ -54,6 +374,20 @@ const AdminPanel = () => {
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent transition-all"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+            
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <input
@@ -66,11 +400,26 @@ const AdminPanel = () => {
               />
             </div>
             
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+                {error}
+              </div>
+            )}
+            
             <button
               type="submit"
-              className="w-full bg-gray-900 text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-colors"
+              disabled={isLoading}
+              className="w-full bg-gray-900 text-white py-3 px-4 rounded-xl font-medium hover:bg-gray-800 transition-colors flex items-center justify-center"
             >
-              Sign In
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Signing In...
+                </>
+              ) : 'Sign In'}
             </button>
           </form>
           
@@ -187,681 +536,35 @@ const AdminPanel = () => {
             <Route path="/projects/view/:id" element={<ProjectView projects={projects} />} />
           </Routes>
         </main>
-      </div>
-    </div>
-  );
-};
-
-const Dashboard = ({ projects }: { projects: Project[] }) => {
-  const stats = {
-    totalProjects: projects.length,
-    categories: [...new Set(projects.map(p => p.category))].length,
-    recentProjects: projects.slice(-3)
   };
 
-  const statCards = [
-    {
-      title: 'Total Projects',
-      value: stats.totalProjects,
-      change: '+12%',
-      icon: FolderOpen,
-      color: 'bg-blue-500'
-    },
-    {
-      title: 'Categories',
-      value: stats.categories,
-      change: '+2',
-      icon: Grid3X3,
-      color: 'bg-green-500'
-    },
-    {
-      title: 'This Month',
-      value: '8',
-      change: '+25%',
-      icon: TrendingUp,
-      color: 'bg-purple-500'
-    },
-    {
-      title: 'Active',
-      value: stats.totalProjects,
-      change: '100%',
-      icon: Activity,
-      color: 'bg-orange-500'
-    }
-  ];
+  // ...
 
-  return (
-    <div className="space-y-6">
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statCards.map((stat, index) => (
-          <div key={index} className="bg-white rounded-2xl p-6 border border-gray-100 hover:shadow-lg transition-shadow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                <p className="text-sm text-green-600 mt-1">{stat.change} from last month</p>
-              </div>
-              <div className={`w-12 h-12 ${stat.color} rounded-xl flex items-center justify-center`}>
-                <stat.icon size={24} className="text-white" />
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Link
-            to="/admin/projects/new"
-            className="flex items-center p-4 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all group"
-          >
-            <div className="w-10 h-10 bg-gray-900 rounded-lg flex items-center justify-center mr-4">
-              <Plus size={20} className="text-white" />
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 group-hover:text-gray-700">Add New Project</h4>
-              <p className="text-sm text-gray-600">Create a new portfolio item</p>
-            </div>
-            <ChevronRight size={20} className="text-gray-400 ml-auto" />
-          </Link>
-          
-          <Link
-            to="/admin/projects"
-            className="flex items-center p-4 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all group"
-          >
-            <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center mr-4">
-              <List size={20} className="text-white" />
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 group-hover:text-gray-700">Manage Projects</h4>
-              <p className="text-sm text-gray-600">Edit existing projects</p>
-            </div>
-            <ChevronRight size={20} className="text-gray-400 ml-auto" />
-          </Link>
-          
-          <Link
-            to="/"
-            className="flex items-center p-4 border border-gray-200 rounded-xl hover:border-gray-300 hover:shadow-sm transition-all group"
-          >
-            <div className="w-10 h-10 bg-green-500 rounded-lg flex items-center justify-center mr-4">
-              <ExternalLink size={20} className="text-white" />
-            </div>
-            <div>
-              <h4 className="font-medium text-gray-900 group-hover:text-gray-700">View Website</h4>
-              <p className="text-sm text-gray-600">See live portfolio</p>
-            </div>
-            <ChevronRight size={20} className="text-gray-400 ml-auto" />
-          </Link>
-        </div>
-      </div>
-
-      {/* Recent Projects */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-100">
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">Recent Projects</h3>
-          <Link to="/admin/projects" className="text-sm text-gray-600 hover:text-gray-900">
-            View all
-          </Link>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {stats.recentProjects.map((project) => (
-            <div key={project.id} className="group cursor-pointer">
-              <div 
-                className="w-full h-48 rounded-xl mb-4 flex items-center justify-center overflow-hidden"
-                style={{ backgroundColor: project.backgroundColor }}
-              >
-                <img
-                  src={project.image}
-                  alt={project.title}
-                  className="w-24 h-24 object-contain group-hover:scale-110 transition-transform"
-                />
-              </div>
-              <h4 className="font-medium text-gray-900 group-hover:text-gray-700">{project.title}</h4>
-              <p className="text-sm text-gray-600">{project.category}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const ProjectsList = ({ projects, setProjects }: { projects: Project[], setProjects: (projects: Project[]) => void }) => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterCategory, setFilterCategory] = useState('All');
-  
-  const categories = ['All', ...new Set(projects.map(p => p.category))];
-  
-  const filteredProjects = projects.filter(project => {
-    const matchesSearch = project.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         project.client.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = filterCategory === 'All' || project.category === filterCategory;
-    return matchesSearch && matchesCategory;
-  });
-
-  const handleDelete = (id: string) => {
-    if (window.confirm('Are you sure you want to delete this project?')) {
-      setProjects(projects.filter(p => p.id !== id));
-    }
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">Projects</h2>
-          <p className="text-gray-600 mt-1">{filteredProjects.length} projects found</p>
-        </div>
-        
-        <Link
-          to="/admin/projects/new"
-          className="bg-gray-900 text-white px-4 py-2.5 rounded-xl font-medium hover:bg-gray-800 transition-colors inline-flex items-center gap-2"
-        >
-          <Plus size={20} />
-          Add Project
-        </Link>
-      </div>
-
-      {/* Filters */}
-      <div className="bg-white rounded-2xl p-6 border border-gray-100">
-        <div className="flex flex-col sm:flex-row gap-4">
-          <div className="flex-1">
-            <div className="relative">
-              <Search size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search projects..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              />
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2">
-            <Filter size={20} className="text-gray-400" />
-            <select
-              value={filterCategory}
-              onChange={(e) => setFilterCategory(e.target.value)}
-              className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-            >
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
-              ))}
-            </select>
-          </div>
-        </div>
-      </div>
-
-      {/* Projects Table */}
-      <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left py-4 px-6 font-medium text-gray-900">Project</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-900">Category</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-900">Client</th>
-                <th className="text-left py-4 px-6 font-medium text-gray-900">Tools</th>
-                <th className="text-right py-4 px-6 font-medium text-gray-900">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {filteredProjects.map((project) => (
-                <tr key={project.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="py-4 px-6">
-                    <div className="flex items-center">
-                      <div 
-                        className="w-12 h-12 rounded-lg mr-4 flex items-center justify-center flex-shrink-0"
-                        style={{ backgroundColor: project.backgroundColor }}
-                      >
-                        <img
-                          src={project.image}
-                          alt={project.title}
-                          className="w-8 h-8 object-contain"
-                        />
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-gray-900">{project.title}</h3>
-                        <p className="text-sm text-gray-600 truncate max-w-xs">{project.description}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-                      {project.category}
-                    </span>
-                  </td>
-                  <td className="py-4 px-6 text-gray-900">{project.client}</td>
-                  <td className="py-4 px-6">
-                    <div className="flex flex-wrap gap-1">
-                      {project.tools.slice(0, 2).map((tool, index) => (
-                        <span key={index} className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-50 text-blue-700">
-                          {tool}
-                        </span>
-                      ))}
-                      {project.tools.length > 2 && (
-                        <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-600">
-                          +{project.tools.length - 2}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="py-4 px-6">
-                    <div className="flex items-center justify-end space-x-2">
-                      <Link
-                        to={`/admin/projects/view/${project.id}`}
-                        className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                        title="View"
-                      >
-                        <Eye size={16} />
-                      </Link>
-                      <Link
-                        to={`/admin/projects/edit/${project.id}`}
-                        className="p-2 text-gray-400 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Edit size={16} />
-                      </Link>
-                      <button
-                        onClick={() => handleDelete(project.id)}
-                        className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        
-        {filteredProjects.length === 0 && (
-          <div className="text-center py-12">
-            <FolderOpen size={48} className="mx-auto text-gray-300 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No projects found</h3>
-            <p className="text-gray-600 mb-4">Get started by creating your first project.</p>
-            <Link
-              to="/admin/projects/new"
-              className="bg-gray-900 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-colors inline-flex items-center gap-2"
-            >
-              <Plus size={20} />
-              Add Project
-            </Link>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-const ProjectForm = ({ projects, setProjects }: { projects: Project[], setProjects: (projects: Project[]) => void }) => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isEdit = location.pathname.includes('/edit/');
-  const projectId = location.pathname.split('/').pop();
-  const existingProject = isEdit ? projects.find(p => p.id === projectId) : null;
+  const { id: projectId } = useParams<{ id?: string }>();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [project, setProject] = useState<Project | undefined>(projects.find(p => p.id === projectId));
 
-  const [formData, setFormData] = useState<Partial<Project>>({
-    id: existingProject?.id || '',
-    title: existingProject?.title || '',
-    category: existingProject?.category || 'Creative',
-    image: existingProject?.image || '',
-    description: existingProject?.description || '',
-    backgroundColor: existingProject?.backgroundColor || '#f3f4f6',
-    client: existingProject?.client || '',
-    tools: existingProject?.tools || [],
-    overview: existingProject?.overview || '',
-    goals: existingProject?.goals || [],
-    gallery: existingProject?.gallery || [],
-    outcome: existingProject?.outcome || { stats: [], quote: undefined }
-  });
+  useEffect(() => {
+    // ...
+  }, [projectId, project]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!formData.id || !formData.title) {
-      alert('Please fill in required fields');
-      return;
-    }
+  // ...
 
-    const newProject: Project = {
-      id: formData.id!,
-      title: formData.title!,
-      category: formData.category!,
-      image: formData.image!,
-      description: formData.description!,
-      backgroundColor: formData.backgroundColor!,
-      client: formData.client!,
-      tools: formData.tools!,
-      overview: formData.overview!,
-      goals: formData.goals!,
-      gallery: formData.gallery!,
-      outcome: formData.outcome!
-    };
-
-    if (isEdit) {
-      setProjects(projects.map(p => p.id === projectId ? newProject : p));
-    } else {
-      setProjects([...projects, newProject]);
-    }
-
-    navigate('/admin/projects');
-  };
-
-  const addTool = () => {
-    setFormData({
-      ...formData,
-      tools: [...(formData.tools || []), '']
-    });
-  };
-
-  const updateTool = (index: number, value: string) => {
-    const newTools = [...(formData.tools || [])];
-    newTools[index] = value;
-    setFormData({ ...formData, tools: newTools });
-  };
-
-  const removeTool = (index: number) => {
-    setFormData({
-      ...formData,
-      tools: formData.tools?.filter((_, i) => i !== index)
-    });
-  };
-
-  const addGoal = () => {
-    setFormData({
-      ...formData,
-      goals: [...(formData.goals || []), '']
-    });
-  };
-
-  const updateGoal = (index: number, value: string) => {
-    const newGoals = [...(formData.goals || [])];
-    newGoals[index] = value;
-    setFormData({ ...formData, goals: newGoals });
-  };
-
-  const removeGoal = (index: number) => {
-    setFormData({
-      ...formData,
-      goals: formData.goals?.filter((_, i) => i !== index)
-    });
-  };
-
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center gap-4">
-        <button
-          onClick={() => navigate('/admin/projects')}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-        >
-          <ArrowLeft size={20} />
-        </button>
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            {isEdit ? 'Edit Project' : 'Create New Project'}
-          </h2>
-          <p className="text-gray-600 mt-1">
-            {isEdit ? 'Update project information' : 'Add a new project to your portfolio'}
-          </p>
-        </div>
-      </div>
-
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Basic Information</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Project ID *
-              </label>
-              <input
-                type="text"
-                value={formData.id}
-                onChange={(e) => setFormData({ ...formData, id: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                required
-                disabled={isEdit}
-                placeholder="unique-project-id"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Project Title *
-              </label>
-              <input
-                type="text"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                required
-                placeholder="PROJECT NAME"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Category *
-              </label>
-              <select
-                value={formData.category}
-                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                required
-              >
-                <option value="Creative">Creative</option>
-                <option value="Design">Design</option>
-                <option value="Photo">Photo</option>
-                <option value="Style">Style</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Client *
-              </label>
-              <input
-                type="text"
-                value={formData.client}
-                onChange={(e) => setFormData({ ...formData, client: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                required
-                placeholder="Client Name"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Image URL *
-              </label>
-              <input
-                type="url"
-                value={formData.image}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                required
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Background Color
-              </label>
-              <div className="flex items-center gap-3">
-                <input
-                  type="color"
-                  value={formData.backgroundColor}
-                  onChange={(e) => setFormData({ ...formData, backgroundColor: e.target.value })}
-                  className="w-12 h-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900"
-                />
-                <input
-                  type="text"
-                  value={formData.backgroundColor}
-                  onChange={(e) => setFormData({ ...formData, backgroundColor: e.target.value })}
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                  placeholder="#f3f4f6"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Description
-            </label>
-            <textarea
-              value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              rows={3}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              placeholder="Brief project description..."
-            />
-          </div>
-
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Project Overview
-            </label>
-            <textarea
-              value={formData.overview}
-              onChange={(e) => setFormData({ ...formData, overview: e.target.value })}
-              rows={4}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-              placeholder="Detailed project overview..."
-            />
-          </div>
-        </div>
-
-        {/* Tools Section */}
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Tools & Technologies</h3>
-            <button
-              type="button"
-              onClick={addTool}
-              className="text-sm text-gray-600 hover:text-gray-900 inline-flex items-center gap-1"
-            >
-              <Plus size={16} />
-              Add Tool
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {formData.tools?.map((tool, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={tool}
-                  onChange={(e) => updateTool(index, e.target.value)}
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                  placeholder="Tool name"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeTool(index)}
-                  className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-            
-            {(!formData.tools || formData.tools.length === 0) && (
-              <p className="text-gray-500 text-center py-4">No tools added yet. Click "Add Tool" to get started.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Goals Section */}
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">Project Goals</h3>
-            <button
-              type="button"
-              onClick={addGoal}
-              className="text-sm text-gray-600 hover:text-gray-900 inline-flex items-center gap-1"
-            >
-              <Plus size={16} />
-              Add Goal
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {formData.goals?.map((goal, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={goal}
-                  onChange={(e) => updateGoal(index, e.target.value)}
-                  className="flex-1 px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
-                  placeholder="Project goal"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeGoal(index)}
-                  className="p-3 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors"
-                >
-                  <X size={16} />
-                </button>
-              </div>
-            ))}
-            
-            {(!formData.goals || formData.goals.length === 0) && (
-              <p className="text-gray-500 text-center py-4">No goals added yet. Click "Add Goal" to get started.</p>
-            )}
-          </div>
-        </div>
-
-        {/* Form Actions */}
-        <div className="flex items-center justify-end gap-4 pt-6">
-          <button
-            type="button"
-            onClick={() => navigate('/admin/projects')}
-            className="px-6 py-3 border border-gray-200 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="bg-gray-900 text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition-colors inline-flex items-center gap-2"
-          >
-            <Save size={20} />
-            {isEdit ? 'Update Project' : 'Create Project'}
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-};
-
-const ProjectView = ({ projects }: { projects: Project[] }) => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const projectId = location.pathname.split('/').pop();
-  const project = projects.find(p => p.id === projectId);
+    );
+  }
 
   if (!project) {
     return (
-      <div className="text-center py-12">
-        <FolderOpen size={48} className="mx-auto text-gray-300 mb-4" />
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Project not found</h3>
+      <div className="bg-white rounded-2xl p-8 border border-gray-100 text-center">
+        <h2 className="text-2xl font-bold text-gray-900 mb-4">Project Not Found</h2>
+        <p className="text-gray-600 mb-6">The project you're looking for doesn't exist or has been removed.</p>
         <button
           onClick={() => navigate('/admin/projects')}
-          className="text-gray-600 hover:text-gray-900"
+          className="bg-gray-900 text-white px-4 py-2 rounded-xl font-medium hover:bg-gray-800 transition-colors inline-flex items-center gap-2"
         >
+          <ArrowLeft size={20} />
           Back to Projects
         </button>
       </div>
@@ -884,7 +587,7 @@ const ProjectView = ({ projects }: { projects: Project[] }) => {
             <p className="text-gray-600 mt-1">{project.category} • {project.client}</p>
           </div>
         </div>
-        
+
         <div className="flex items-center gap-2">
           <Link
             to={`/admin/projects/edit/${project.id}`}
@@ -898,7 +601,7 @@ const ProjectView = ({ projects }: { projects: Project[] }) => {
 
       {/* Project Preview */}
       <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-        <div 
+        <div
           className="h-80 flex items-center justify-center"
           style={{ backgroundColor: project.backgroundColor }}
         >
