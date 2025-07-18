@@ -22,21 +22,28 @@ const Home = () => {
   };
 
   return (
-    <div className="pt-16">
+    <div className="pt-20">
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-16 text-gray-900 leading-tight animate-fade-in">
+      <section className="min-h-screen flex items-center justify-center px-6 py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto text-center">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-8 text-gray-900 leading-tight max-w-4xl mx-auto">
             A place to display your
             <br />
             masterpiece
           </h1>
           
+          {/* Small decorative circle */}
+          <div className="flex justify-center mb-16">
+            <div className="w-12 h-12 border-2 border-orange-300 rounded-full flex items-center justify-center">
+              <div className="w-2 h-2 bg-orange-400 rounded-full"></div>
+            </div>
+          </div>
+          
           {/* Overlapping Cards */}
-          <div className="relative flex justify-center items-center mb-16 animate-slide-up">
-            <div className="flex items-center justify-center space-x-4 md:space-x-6">
+          <div className="relative flex justify-center items-center mb-16">
+            <div className="flex items-center justify-center space-x-2 md:space-x-4">
               {/* Card 1 - VR/Tech */}
-              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-8deg] hover:rotate-[-4deg] transition-transform duration-300">
                 <img
                   src="https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="VFX and Technology"
@@ -45,7 +52,7 @@ const Home = () => {
               </div>
               
               {/* Card 2 - Food/Restaurant */}
-              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[4deg] hover:rotate-[2deg] transition-transform duration-300 z-10">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[4deg] hover:rotate-[2deg] transition-transform duration-300 z-10">
                 <img
                   src="https://images.pexels.com/photos/1640777/pexels-photo-1640777.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Food and Restaurant Marketing"
@@ -54,7 +61,7 @@ const Home = () => {
               </div>
               
               {/* Card 3 - Fitness */}
-              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[-2deg] hover:rotate-[0deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[-2deg] hover:rotate-[0deg] transition-transform duration-300">
                 <img
                   src="https://images.pexels.com/photos/1552242/pexels-photo-1552242.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Fitness Marketing"
@@ -63,7 +70,7 @@ const Home = () => {
               </div>
               
               {/* Card 4 - Education */}
-              <div className="w-48 h-32 md:w-64 md:h-40 rounded-2xl overflow-hidden shadow-2xl transform rotate-[6deg] hover:rotate-[3deg] transition-transform duration-300">
+              <div className="w-40 h-28 md:w-56 md:h-40 rounded-2xl overflow-hidden shadow-xl transform rotate-[6deg] hover:rotate-[3deg] transition-transform duration-300">
                 <img
                   src="https://images.pexels.com/photos/5212345/pexels-photo-5212345.jpeg?auto=compress&cs=tinysrgb&w=800"
                   alt="Education and Tuition"
@@ -73,18 +80,19 @@ const Home = () => {
             </div>
           </div>
           
-          <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto animate-slide-up">
-            Digital marketers can showcase their campaigns, and businesses can discover and connect with 
-            services that resonate with them.
+          <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Artists can display their masterpieces, and buyers can discover and purchase works
+            <br />
+            that resonate with them.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-slide-up">
-            <button onClick={scrollToContact} className="btn-primary inline-flex items-center gap-2">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <button onClick={scrollToContact} className="bg-gray-900 text-white px-8 py-3 rounded-lg font-medium hover:bg-gray-800 transition-colors">
               Contact Me
             </button>
             <button 
               onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
-              className="btn-secondary inline-flex items-center gap-2"
+              className="border border-gray-300 text-gray-900 px-8 py-3 rounded-lg font-medium hover:bg-gray-50 transition-colors"
             >
               Discover Our Work
             </button>
